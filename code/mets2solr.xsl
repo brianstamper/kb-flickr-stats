@@ -10,7 +10,7 @@
     <!-- date functions provided by http://www.exslt.org/date/index.html -->
     <xsl:import href="date.difference/date.difference.xsl" />
     <xsl:import href="date.date-time/date.date-time.xsl" />
-
+    <xsl:import href="date.add/date.add.xsl" />
     <xsl:output indent="no" omit-xml-declaration="yes" />
     
     <!-- This is in a partial state. The idea is to get the date accessioned, compare that
@@ -38,35 +38,86 @@
     <xsl:template match="mets:METS">
         <xsl:param name="itemHandle"/>
         <xsl:variable name="dc.date.accessioned">
-            <xsl:apply-templates select="dim:field[@element='date'][@qualifier='accessioned']"/>
+            <xsl:value-of select="mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='date'][@qualifier='accessioned']"/>
         </xsl:variable>
+        <xsl:apply-templates select="mets:fileSec/mets:fileGrp[@USE='CONTENT']">
+            <xsl:with-param name="itemHandle" select="$itemHandle"/>
+            <xsl:with-param name="dc.date.accessioned" select="$dc.date.accessioned"/>
+        </xsl:apply-templates>
+    </xsl:template>
+    
+    <xsl:template match="mets:file">
+        <xsl:param name="dc.date.accessioned"/>
+        <xsl:param name="itemHandle"/>
+
         <xsl:variable name="fileID">
-            <xsl:apply-templates select="mets:fileSec"/>
+            <xsl:value-of select="substring-after(./@ID,'_')"/>
         </xsl:variable>
-        <xsl:text>wget -O solrcache/</xsl:text>
-        <xsl:value-of select="$itemHandle"/>
-        <xsl:text>_</xsl:text>
-        <xsl:value-of select="$fileID"/>
-        <xsl:text>.xml </xsl:text>
-        <xsl:variable name="daysAgo">
+
+        <xsl:variable name="daysAgoString">
             <xsl:call-template name="date:difference">
                 <xsl:with-param name="start" select="$dc.date.accessioned" />
                 <xsl:with-param name="end" select="date:date-time()" />
             </xsl:call-template>
         </xsl:variable>
-        <xsl:value-of select="$daysAgo"/>
-        <xsl:value-of select="$dc.date.accessioned"/>
+
+        <xsl:variable name="daysAgo">
+            <xsl:value-of select="number(substring-before(substring-after($daysAgoString,'P'),'D'))"/>
+        </xsl:variable>
+        
+        <xsl:variable name="dc.date.accessioned.Plus100">
+            <xsl:call-template name="date:add">
+                <xsl:with-param name="date-time" select="$dc.date.accessioned" />
+                <xsl:with-param name="duration" select="100" />
+            </xsl:call-template>
+        </xsl:variable>
+        
+
+        <!--wget -O solrcache/45765_195265.xml ... -->
+        <xsl:text>wget -O solrcache/</xsl:text>
+        <xsl:value-of select="$itemHandle"/>
+        <xsl:text>_</xsl:text>
         <xsl:value-of select="$fileID"/>
+        <xsl:text>.xml </xsl:text>
 
+        <!--'http://127.0.0.1:8080/solr/statistics/select?rows=0&amp;facet.mincount=1&amp;facet.date=time&amp;facet.date.end=NOW%2FDAY-
+            60
+            DAYS&amp;facet.date.gap=%2B1DAY&amp;facet.date.start=NOW%2FDAY-
+            260
+            DAYS&amp;facet=true&amp;facet.limit=100&amp;fq=-isBot:true&amp;fq=%28time:%5B
+            2010-06-14
+            T00:00:00.000Z+TO+
+            2010-12-31
+            T00:00:00.000Z%5D%29&amp;q=type:+0+AND+id:
+            195265
+            '-->
 
-    </xsl:template>
-    
-    <xsl:template match="mets:fileGrp[@USE='CONTENT']">
-        <xsl:value-of select="@ID"/>
+        <xsl:text>'http://127.0.0.1:8080/solr/statistics/select?rows=0&amp;facet.mincount=1&amp;facet.date=time&amp;facet.date.end=NOW%2FDAY-</xsl:text>
+        <xsl:value-of select="($daysAgo - 100)"/>
+        <xsl:text>DAYS&amp;facet.date.gap=%2B1DAY&amp;facet.date.start=NOW%2FDAY-</xsl:text>
+        <xsl:value-of select="$daysAgo"/>
+        <xsl:text>DAYS&amp;facet=true&amp;facet.limit=100&amp;fq=-isBot:true&amp;fq=%28time:%5B</xsl:text>
+        <xsl:value-of select="$dc.date.accessioned"/>
+        <xsl:text>+TO+</xsl:text>
+        <xsl:value-of select="$dc.date.accessioned.Plus100"/>
+        <xsl:text>%5D%29&amp;q=type:+0+AND+id:</xsl:text>
+        <xsl:value-of select="$fileID"/>
+        <xsl:text>'</xsl:text>
+
     </xsl:template>
 
 </xsl:stylesheet>
 
 
-<!--wget -O solrcache/45765_195265.xml 
-    'http://127.0.0.1:8080/solr/statistics/select?rows=0&amp;facet.mincount=1&amp;facet.date=time&amp;facet.date.end=NOW%2FDAY-60DAYS&amp;facet.date.gap=%2B1DAY&amp;facet.date.start=NOW%2FDAY-260DAYS&amp;facet=true&amp;facet.limit=100&amp;fq=-isBot:true&amp;fq=%28time:%5B2010-06-14T00:00:00.000Z+TO+2010-12-31T00:00:00.000Z%5D%29&amp;q=type:+0+AND+id:195265'-->
+ 
+    
+
+
+
+
+
+<!--        <xsl:value-of select="$itemHandle"/>
+    <xsl:value-of select="$dc.date.accessioned"/>
+    <xsl:value-of select="$fileID"/>
+-->
+
