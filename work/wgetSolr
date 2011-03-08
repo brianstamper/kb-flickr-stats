@@ -1,3 +1,4 @@
+#!/bin/bash
 wget -O solrcache/45740_194319.xml 'http://127.0.0.1:8080/solr/statistics/select?rows=0&facet.mincount=1&facet.date=time&facet.date.end=NOW%2FDAY-60DAYS&facet.date.gap=%2B1DAY&facet.date.start=NOW%2FDAY-260DAYS&facet=true&facet.limit=100&fq=-isBot:true&fq=%28time:%5B2010-06-14T00:00:00.000Z+TO+2010-12-31T00:00:00.000Z%5D%29&q=type:+0+AND+id:194319'
 sleep 1
 wget -O solrcache/45742_194992.xml 'http://127.0.0.1:8080/solr/statistics/select?rows=0&facet.mincount=1&facet.date=time&facet.date.end=NOW%2FDAY-60DAYS&facet.date.gap=%2B1DAY&facet.date.start=NOW%2FDAY-260DAYS&facet=true&facet.limit=100&fq=-isBot:true&fq=%28time:%5B2010-06-14T00:00:00.000Z+TO+2010-12-31T00:00:00.000Z%5D%29&q=type:+0+AND+id:194992'

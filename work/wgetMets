@@ -1,3 +1,4 @@
+#!/bin/bash
 wget -O metscache/45740.xml 'https://kb.osu.edu/dspace/metadata/handle/1811/45740/mets.xml'
 sleep 2
 wget -O metscache/45741.xml 'https://kb.osu.edu/dspace/metadata/handle/1811/45741/mets.xml'
