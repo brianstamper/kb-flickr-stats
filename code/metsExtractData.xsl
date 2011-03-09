@@ -32,9 +32,9 @@
     
 
     <xsl:template match="dim:field"/>
-    <xsl:template match="dim:field[@element='{$element}'][@qualifier='{$qualifier}']" priority="5">
+<!--    <xsl:template match="dim:field[@element='{$element}'][@qualifier='{$qualifier}']" priority="5">
         <xsl:value-of select="."/>
-    </xsl:template>
+    </xsl:template>-->
     <xsl:template match="dim:field[@element='date'][@qualifier='accessioned']" priority="5">
         <xsl:value-of select="."/>
         <xsl:text>
