@@ -105,7 +105,7 @@
         <xsl:value-of select="$dc.date.accessioned"/>
         <xsl:text>+TO+</xsl:text>
         <xsl:value-of select="$dc.date.accessioned.Plus100"/>
-        <xsl:text>%5D%29&amp;q=type:+0+AND+id:</xsl:text>
+        <xsl:text>%5D%29&amp;q=type:+0+AND+-dns:msnBot-*+AND+id:</xsl:text>
         <xsl:value-of select="$fileID"/>
         <xsl:text>'</xsl:text>
     </xsl:template>
