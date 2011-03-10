@@ -90,7 +90,7 @@
         </xsl:variable>
 
         <!--wget -O solrcache/45765_195265.xml ... -->
-        <xsl:text>wget -O solrcache/</xsl:text>
+        <xsl:text>wget -nv -O solrcache/</xsl:text>
         <xsl:value-of select="$itemHandle"/>
         <xsl:text>_</xsl:text>
         <xsl:value-of select="$fileID"/>

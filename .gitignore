@@ -1,5 +1,3 @@
-metscache/
-solrcache/
-oaicache/
-solrcache-old/
+*cache*
+work/
 out/
